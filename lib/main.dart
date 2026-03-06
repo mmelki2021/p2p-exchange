@@ -74,6 +74,107 @@ class LoginScreenWeb extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 700;
+
+    if (isMobile) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('P2P Exchange'),
+          elevation: 0,
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(height: 32),
+                Image.asset(
+                  'assets/images/p2p_exchange_logo.png',
+                  height: 160,
+                ),
+                SizedBox(height: 16),
+                Text(
+                  'P2P Exchange Platform',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF1E88E5),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'Exchange currencies safely and instantly between peers.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                ),
+                SizedBox(height: 32),
+                TextField(
+                  controller: emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                    labelText: 'Email address',
+                    prefixIcon: Icon(Icons.email_outlined),
+                    filled: true,
+                    fillColor: Colors.grey[100],
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 16),
+                TextField(
+                  controller: passwordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    prefixIcon: Icon(Icons.lock_outline),
+                    filled: true,
+                    fillColor: Colors.grey[100],
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (_) => DashboardScreen()),
+                      );
+                    },
+                    child: Text(
+                      'Sign in',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 12),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => SignupScreenWeb()),
+                    );
+                  },
+                  child: Text(
+                    'Create an account',
+                    style: TextStyle(color: Color(0xFF8E24AA)),
+                  ),
+                ),
+                SizedBox(height: 16),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -347,6 +448,130 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 900;
+
+    if (isMobile) {
+      // Mobile-friendly layout: single column, similar to the initial implementation
+      return Scaffold(
+        appBar: AppBar(title: Text('Dashboard')),
+        body: Padding(
+          padding: EdgeInsets.all(12),
+          child: ListView(
+            children: [
+              Card(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                color: Color(0xFF1E88E5),
+                child: Padding(
+                  padding: EdgeInsets.all(24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Wallet Balance', style: TextStyle(color: Colors.white, fontSize: 18)),
+                      SizedBox(height: 10),
+                      Text(
+                        '\$${walletBalance.toStringAsFixed(2)}',
+                        style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 20),
+                      SizedBox(
+                        height: 120,
+                        child: LineChart(
+                          LineChartData(
+                            gridData: FlGridData(show: false),
+                            titlesData: FlTitlesData(show: false),
+                            borderData: FlBorderData(show: false),
+                            lineBarsData: [
+                              LineChartBarData(
+                                spots: [
+                                  FlSpot(0, walletBalance * 0.7 / 1000),
+                                  FlSpot(1, walletBalance * 0.75 / 1000),
+                                  FlSpot(2, walletBalance * 0.8 / 1000),
+                                  FlSpot(3, walletBalance * 0.9 / 1000),
+                                  FlSpot(4, walletBalance / 1000),
+                                ],
+                                isCurved: true,
+                                barWidth: 3,
+                                dotData: FlDotData(show: false),
+                                color: Colors.white,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Text(
+                'Marketplace Offers',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1E88E5)),
+              ),
+              SizedBox(height: 10),
+              Column(
+                children: offers
+                    .map(
+                      (offer) => Card(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        elevation: 4,
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: Color(0xFF8E24AA),
+                            child: Text(offer['from']!, style: TextStyle(color: Colors.white)),
+                          ),
+                          title: Text('${offer['from']} → ${offer['to']}'),
+                          subtitle: Text('Rate: ${offer['rate']} | User: ${offer['user']}'),
+                          trailing: Icon(Icons.arrow_forward_ios, size: 16, color: Color(0xFF1E88E5)),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => OfferDetailScreen(offer: offer)),
+                            );
+                          },
+                        ),
+                      ),
+                    )
+                    .toList(),
+              ),
+              SizedBox(height: 20),
+              Text(
+                'Recent Transactions',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1E88E5)),
+              ),
+              SizedBox(height: 10),
+              Column(
+                children: transactions
+                    .map(
+                      (t) => Card(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        child: ListTile(
+                          leading: Icon(
+                            t['status'] == 'Completed' ? Icons.check_circle : Icons.timelapse,
+                            color: t['status'] == 'Completed' ? Color(0xFF16A34A) : Color(0xFFF97316),
+                          ),
+                          title: Text('${t['from']} → ${t['to']} : ${t['amount']}'),
+                          subtitle: Text('Status: ${t['status']}'),
+                        ),
+                      ),
+                    )
+                    .toList(),
+              ),
+            ],
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => NewOfferScreen()),
+            );
+          },
+        ),
+      );
+    }
+
+    // Web layout: keep the modern dashboard with sidebar and cards
     return Scaffold(
       appBar: AppBar(
         title: Row(
