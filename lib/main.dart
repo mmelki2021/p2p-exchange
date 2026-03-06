@@ -44,11 +44,24 @@ class SplashScreen extends StatelessWidget {
     });
     return Scaffold(
       body: Center(
-        child: Text('P2P Exchange',
-            style: TextStyle(
-                fontSize: 36,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              'assets/images/p2p_exchange_logo.png',
+              height: 320,
+            ),
+            SizedBox(height: 16),
+            Text(
+              'P2P Exchange',
+              style: TextStyle(
+                fontSize: 28,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF1E88E5))),
+                color: Color(0xFF1E88E5),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -75,7 +88,10 @@ class LoginScreenWeb extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                FlutterLogo(size: 80),
+                Image.asset(
+                  'assets/images/p2p_exchange_logo.png',
+                  height: 320,
+                ),
                 SizedBox(height: 16),
                 Text(
                   'P2P Exchange Platform',
@@ -164,7 +180,10 @@ class SignupScreenWeb extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                FlutterLogo(size: 80),
+                Image.asset(
+                  'assets/images/p2p_exchange_logo.png',
+                  height: 320,
+                ),
                 SizedBox(height: 16),
                 Text('Create Account', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF1E88E5))),
                 SizedBox(height: 8),
